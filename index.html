@@ -27,17 +27,38 @@
   a{color:inherit;text-decoration:none}
   .wrap{max-width:1120px;margin:0 auto;padding:0 22px}
   .btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;border-radius:4px;
-       padding:14px 26px;font-size:16px;cursor:pointer;border:1px solid transparent;transition:.18s;min-height:48px}
+       padding:14px 26px;font-size:16px;cursor:pointer;border:1px solid transparent;transition:.2s;min-height:48px}
   .btn-solid{background:var(--tan);color:#fff}
-  .btn-solid:hover{background:var(--tan-dark)}
+  .btn-solid:hover{background:var(--tan-dark);transform:translateY(-2px)}
   .btn-green{background:var(--green);color:var(--cream)}
-  .btn-green:hover{background:var(--green-2)}
+  .btn-green:hover{background:var(--green-2);transform:translateY(-2px)}
   .btn-out{background:transparent;color:var(--green);border-color:var(--green)}
   .btn-out:hover{background:var(--green);color:var(--cream)}
   .link-cta{font-family:var(--serif);font-style:italic;color:var(--tan-dark);font-weight:700;
        border-bottom:2px solid var(--tan);padding-bottom:2px}
+  .link-cta .arw{display:inline-block;transition:transform .22s ease}
+  .link-cta:hover .arw{transform:translateX(6px)}
   .eyebrow{font-family:var(--serif);font-style:italic;color:var(--tan-dark);font-size:18px}
   section{padding:84px 0}
+
+  /* ===== MOTION (signature: Ken Burns + blur-in + drawing connector) ===== */
+  .reveal{opacity:0;filter:blur(9px);transform:translateY(16px);
+       transition:opacity .85s ease,filter .85s ease,transform .85s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;filter:blur(0);transform:none}
+  .steps > .reveal:nth-child(2){transition-delay:.18s}
+  .steps > .reveal:nth-child(3){transition-delay:.36s}
+  .small-qs > .reveal:nth-child(2){transition-delay:.12s}
+
+  @keyframes riseUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .hero-anim > *{opacity:0;animation:riseUp .8s cubic-bezier(.2,.7,.2,1) forwards}
+  .hero-anim > *:nth-child(1){animation-delay:.15s}
+  .hero-anim > *:nth-child(2){animation-delay:.30s}
+  .hero-anim > *:nth-child(3){animation-delay:.45s}
+  .hero-anim > *:nth-child(4){animation-delay:.60s}
+  .hero-anim .pill{opacity:0;animation:riseUp .6s ease forwards}
+  .hero-anim .pill:nth-child(1){animation-delay:.80s}
+  .hero-anim .pill:nth-child(2){animation-delay:.92s}
+  .hero-anim .pill:nth-child(3){animation-delay:1.04s}
 
   /* ANNOUNCEMENT BAR */
   .announce{background:var(--green);color:var(--cream);text-align:center;font-size:14px;
@@ -58,11 +79,14 @@
   .hamburger{display:none;background:none;border:0;font-size:26px;color:var(--green);cursor:pointer}
   #mnav{display:none}
 
-  /* HERO — full-bleed centered */
-  .hero{position:relative;color:var(--cream);text-align:center;
-        background:linear-gradient(rgba(20,44,26,.74),rgba(20,44,26,.74)),
-        repeating-linear-gradient(135deg,#244e2c,#244e2c 26px,#28572f 26px,#28572f 52px)}
-  .hero .wrap{padding:120px 22px}
+  /* HERO — full-bleed centered with Ken Burns bg */
+  .hero{position:relative;overflow:hidden;color:var(--cream);text-align:center;background:#173d20}
+  .hero::before{content:"";position:absolute;inset:-5%;z-index:0;
+       background:repeating-linear-gradient(135deg,#244e2c,#244e2c 26px,#28572f 26px,#28572f 52px);
+       animation:kenburns 22s ease-in-out infinite alternate}
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(20,44,26,.74)}
+  @keyframes kenburns{from{transform:scale(1) translate(0,0)}to{transform:scale(1.15) translate(1.5%,-2%)}}
+  .hero .wrap{position:relative;z-index:2;padding:120px 22px}
   .hero .eyebrow{color:#e7d3a8}
   .hero h1{color:#fff;font-size:56px;max-width:880px;margin:14px auto 18px}
   .hero p{font-size:20px;color:#e8efe1;max-width:600px;margin:0 auto 30px}
@@ -94,13 +118,16 @@
   .svc-row li{display:flex;gap:10px;font-size:16px}
   .svc-row li::before{content:"\1F33F";font-size:15px}
 
-  /* HOW IT WORKS — numbered steps */
+  /* HOW IT WORKS — numbered steps + drawing connector */
   .how{background:var(--cream-2)}
-  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;margin-top:20px;counter-reset:step}
-  .step{text-align:center;position:relative}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;margin-top:20px;position:relative}
+  .steps::before{content:"";position:absolute;top:32px;left:18%;right:18%;height:2px;background:var(--tan);
+       transform:scaleX(0);transform-origin:left;transition:transform 1.1s ease .2s;z-index:0}
+  .steps.in::before{transform:scaleX(1)}
+  .step{text-align:center;position:relative;z-index:1}
   .step .n{width:64px;height:64px;border-radius:50%;background:var(--green);color:var(--cream);
        font-family:var(--serif);font-size:28px;display:flex;align-items:center;justify-content:center;
-       margin:0 auto 18px}
+       margin:0 auto 18px;border:4px solid var(--cream-2)}
   .step h3{font-size:22px;margin-bottom:8px}
   .step p{font-size:15px}
 
@@ -132,7 +159,7 @@
   summary{list-style:none;cursor:pointer;padding:22px 4px;font-family:var(--serif);font-size:20px;
        color:var(--ink);display:flex;justify-content:space-between;align-items:center}
   summary::-webkit-details-marker{display:none}
-  summary::after{content:"+";color:var(--tan);font-size:26px;font-weight:300}
+  summary::after{content:"+";color:var(--tan);font-size:26px;font-weight:300;transition:transform .2s}
   details[open] summary::after{content:"\2013"}
   details p{padding:0 4px 22px;font-size:16px}
 
@@ -171,9 +198,20 @@
     .svc-row,.why .wrap,.contact .wrap{grid-template-columns:1fr;gap:28px}
     .svc-row.flip .svc-img{order:0}
     .steps,.small-qs{grid-template-columns:1fr}
+    .steps::before{display:none}
     section{padding:58px 0}
     .feature-q p{font-size:21px}
     .btn{width:100%;justify-content:center}
+  }
+
+  @media(prefers-reduced-motion:reduce){
+    *{scroll-behavior:auto}
+    .reveal{opacity:1!important;filter:none!important;transform:none!important;transition:none!important}
+    .hero::before{animation:none!important}
+    .hero-anim > *,.hero-anim .pill{animation:none!important;opacity:1!important;transform:none!important}
+    .steps::before{transition:none!important;transform:scaleX(1)!important}
+    .btn:hover{transform:none!important}
+    .link-cta:hover .arw{transform:none!important}
   }
 </style>
 </head>
@@ -204,9 +242,9 @@
   </div>
 </header>
 
-<!-- HERO (full-bleed centered) -->
+<!-- HERO (full-bleed centered, Ken Burns) -->
 <section class="hero" id="home">
-  <div class="wrap">
+  <div class="wrap hero-anim">
     <p class="eyebrow">Lawn. Wash. Detail.</p>
     <h1>One trusted local pro for everything around your home.</h1>
     <p>From a fresh-cut lawn to a pressure-washed driveway to a spotless car &mdash; Mr. Green does it all,
@@ -226,52 +264,52 @@
 <!-- STATS -->
 <div class="stats">
   <div class="wrap">
-    <div class="stat"><b>5.0&#9733;</b><span>Google Rated</span></div>
-    <div class="stat"><b>29+</b><span>Happy Reviews</span></div>
-    <div class="stat"><b>3-in-1</b><span>Services, One Call</span></div>
-    <div class="stat"><b>100%</b><span>Local &amp; Trusted</span></div>
+    <div class="stat reveal"><b>5.0&#9733;</b><span>Google Rated</span></div>
+    <div class="stat reveal"><b>29+</b><span>Happy Reviews</span></div>
+    <div class="stat reveal"><b>3-in-1</b><span>Services, One Call</span></div>
+    <div class="stat reveal"><b>100%</b><span>Local &amp; Trusted</span></div>
   </div>
 </div>
 
 <!-- SERVICES (alternating rows) -->
 <section id="services">
   <div class="wrap">
-    <div class="lead-head">
+    <div class="lead-head reveal">
       <span class="eyebrow">What Mr. Green Does</span>
       <h2>Three Services. One Phone Call.</h2>
       <p>Stop juggling three different companies. Green &amp; Thingz keeps your whole property looking its best.</p>
     </div>
 
     <div class="svc-row">
-      <div class="svc-img">[ PHOTO ]<br>Freshly mowed lawn / landscaping work</div>
-      <div>
+      <div class="svc-img reveal">[ PHOTO ]<br>Freshly mowed lawn / landscaping work</div>
+      <div class="reveal">
         <span class="svc-num">01</span>
         <h3>Lawn Care &amp; Landscaping</h3>
         <p>Crisp, healthy lawns and tidy beds without lifting a finger. Reliable, on-schedule, and detail-obsessed.</p>
         <ul><li>Mowing, edging &amp; trimming</li><li>Cleanups &amp; bed maintenance</li><li>Seasonal yard work</li></ul>
-        <a href="#contact" class="link-cta">Get a lawn quote &rarr;</a>
+        <a href="#contact" class="link-cta">Get a lawn quote <span class="arw">&rarr;</span></a>
       </div>
     </div>
 
     <div class="svc-row flip">
-      <div class="svc-img">[ PHOTO ]<br>Before/after pressure-washed house or driveway</div>
-      <div>
+      <div class="svc-img reveal">[ PHOTO ]<br>Before/after pressure-washed house or driveway</div>
+      <div class="reveal">
         <span class="svc-num">02</span>
         <h3>Pressure Washing</h3>
         <p>Bring back the bright. Houses, trim, driveways, and walkways washed back to like-new &mdash; safely.</p>
         <ul><li>House &amp; trim soft washing</li><li>Driveways &amp; sidewalks</li><li>Decks, patios &amp; fences</li></ul>
-        <a href="#contact" class="link-cta">Get a wash quote &rarr;</a>
+        <a href="#contact" class="link-cta">Get a wash quote <span class="arw">&rarr;</span></a>
       </div>
     </div>
 
     <div class="svc-row">
-      <div class="svc-img">[ PHOTO ]<br>Car detailed in a customer's driveway</div>
-      <div>
+      <div class="svc-img reveal">[ PHOTO ]<br>Car detailed in a customer's driveway</div>
+      <div class="reveal">
         <span class="svc-num">03</span>
         <h3>Mobile Auto Detailing</h3>
         <p>We come to you. Interior and exterior detailing right in your driveway &mdash; no waiting rooms.</p>
         <ul><li>Interior deep clean</li><li>Exterior wash &amp; shine</li><li>Done at your home or work</li></ul>
-        <a href="#contact" class="link-cta">Get a detail quote &rarr;</a>
+        <a href="#contact" class="link-cta">Get a detail quote <span class="arw">&rarr;</span></a>
       </div>
     </div>
   </div>
@@ -280,15 +318,15 @@
 <!-- HOW IT WORKS -->
 <section class="how" id="how">
   <div class="wrap">
-    <div class="lead-head">
+    <div class="lead-head reveal">
       <span class="eyebrow">Easy as it gets</span>
       <h2>How It Works</h2>
       <p>No apps, no runaround. Just a quick call and it's handled.</p>
     </div>
-    <div class="steps">
-      <div class="step"><div class="n">1</div><h3>Call or Text</h3><p>Reach Mr. Green directly at (615) 987-9982 and tell him what you need.</p></div>
-      <div class="step"><div class="n">2</div><h3>Get a Fair Quote</h3><p>A clear, honest price up front &mdash; no surprises, no pressure.</p></div>
-      <div class="step"><div class="n">3</div><h3>Sit Back</h3><p>He shows up on time, does it right, and leaves it spotless.</p></div>
+    <div class="steps" id="steps">
+      <div class="step reveal"><div class="n">1</div><h3>Call or Text</h3><p>Reach Mr. Green directly at (615) 987-9982 and tell him what you need.</p></div>
+      <div class="step reveal"><div class="n">2</div><h3>Get a Fair Quote</h3><p>A clear, honest price up front &mdash; no surprises, no pressure.</p></div>
+      <div class="step reveal"><div class="n">3</div><h3>Sit Back</h3><p>He shows up on time, does it right, and leaves it spotless.</p></div>
     </div>
   </div>
 </section>
@@ -296,8 +334,8 @@
 <!-- WHY ONE COMPANY -->
 <section class="why" id="why">
   <div class="wrap">
-    <div class="photo">[ PHOTO ]<br>Mr. Green / his truck &amp; equipment / a great finished job</div>
-    <div>
+    <div class="photo reveal">[ PHOTO ]<br>Mr. Green / his truck &amp; equipment / a great finished job</div>
+    <div class="reveal">
       <span class="eyebrow">Why one company for all three?</span>
       <h2>One pro who knows your property.</h2>
       <p class="big">When the same trusted person handles your lawn, your wash, and your detailing,
@@ -314,20 +352,20 @@
 <!-- REVIEWS -->
 <section class="reviews" id="reviews">
   <div class="wrap">
-    <div class="lead-head">
+    <div class="lead-head reveal">
       <span class="eyebrow">Neighbors love the work</span>
       <h2>5.0 Stars, Earned the Hard Way</h2>
     </div>
-    <div class="feature-q">
+    <div class="feature-q reveal">
       <p>"Very impressive work. I use Green &amp; Thingz for lawn care, pressure washing, and mobile detailing.
          Mr. Green is very professional and puts quality above everything!"</p>
       <div class="who">&mdash; Ilesha Mae, Google Review</div>
     </div>
     <div class="small-qs">
-      <div class="sq"><div class="st">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="sq reveal"><div class="st">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p>"Pressure washed my house trim &amp; I haven't seen it that white since 1996... also did my lawn &amp; did an awesome job. Highly recommend."</p>
         <div class="who">&mdash; Mrs. Eileen</div></div>
-      <div class="sq"><div class="st">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <div class="sq reveal"><div class="st">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
         <p>"His attention to detail is unmatched. We've had several companies out here and Mr. Green has done the best job."</p>
         <div class="who">&mdash; Jason Bugter</div></div>
     </div>
@@ -337,11 +375,11 @@
 <!-- FAQ -->
 <section id="faq">
   <div class="wrap">
-    <div class="lead-head">
+    <div class="lead-head reveal">
       <span class="eyebrow">Good to know</span>
       <h2>Frequently Asked</h2>
     </div>
-    <div class="faq-list">
+    <div class="faq-list reveal">
       <details open><summary>Do you really do all three services?</summary>
         <p>Yes &mdash; lawn care, pressure washing, and mobile auto detailing. Many customers use Green &amp; Thingz for all three, which means one trusted person and one easy number to call.</p></details>
       <details><summary>What areas do you serve?</summary>
@@ -359,7 +397,7 @@
 <!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="wrap">
-    <div>
+    <div class="reveal">
       <span class="eyebrow">Let's get started</span>
       <h2>Request a Free Quote</h2>
       <p class="sub">The quickest way to reach Mr. Green:</p>
@@ -374,7 +412,7 @@
         <div><b>Services:</b> Lawn &bull; Pressure Washing &bull; Mobile Detailing</div>
       </div>
     </div>
-    <div>
+    <div class="reveal">
       <!-- Formspree: replace XXXXXX with the real form ID after signup at formspree.io -->
       <form action="https://formspree.io/f/XXXXXX" method="POST">
         <div><label for="name">Name</label><input id="name" name="name" required placeholder="Your name" /></div>
@@ -409,9 +447,28 @@
 </footer>
 
 <script>
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var b=document.getElementById('hamburger'), m=document.getElementById('mnav');
   b.addEventListener('click',function(){m.classList.toggle('open');});
   m.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){m.classList.remove('open');});});
+
+  var reveals=document.querySelectorAll('.reveal');
+  var steps=document.getElementById('steps');
+  if(reduce || !('IntersectionObserver' in window)){
+    reveals.forEach(function(el){el.classList.add('in');});
+    if(steps) steps.classList.add('in');
+  } else {
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    },{threshold:.14, rootMargin:'0px 0px -40px 0px'});
+    reveals.forEach(function(el){io.observe(el);});
+    if(steps){
+      var sio=new IntersectionObserver(function(es){
+        es.forEach(function(e){ if(e.isIntersecting){ steps.classList.add('in'); sio.disconnect(); } });
+      },{threshold:.3});
+      sio.observe(steps);
+    }
+  }
 </script>
 </body>
 </html>
